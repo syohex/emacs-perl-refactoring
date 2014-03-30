@@ -6,7 +6,7 @@
 ## Requirements
 
 - [App::PRT](https://github.com/hitode909/App-PRT)
-- `File::Zglob`
+- [File::Zglob](https://metacpan.org/release/File-Zglob)
 
 
 ## Commands
