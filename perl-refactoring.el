@@ -80,14 +80,21 @@
       (error "Failed: '%s'" cmd))
     (message "Success: prt %s" subcmd)))
 
-(defun perl-refactoring--save-buffers (root files)
+(defun perl-refactoring--apply-buffers (func root files)
   (cl-loop with paths = (mapcar (lambda (f) (concat root f)) files)
            for buf in (buffer-list)
            for bufname = (buffer-file-name buf)
            when (and bufname (member bufname paths))
            do
            (with-current-buffer buf
-             (save-buffer))))
+             (funcall func))))
+
+(defun perl-refactoring--save-buffers (root files)
+  (perl-refactoring--apply-buffers 'save-buffer root files))
+
+(defun perl-refactoring--revert-buffers (root files)
+  (perl-refactoring--apply-buffers
+   (lambda () (revert-buffer t t)) root files))
 
 ;;;###autoload
 (defun perl-refactoring-replace-token (from to target)
@@ -100,7 +107,8 @@
   (let* ((project-root (perl-refactoring--root-directory))
          (expanded (perl-refactoring--expand-wildcard project-root target)))
     (perl-refactoring--save-buffers project-root expanded)
-    (perl-refactoring--exec-prt "replace_token" project-root from to expanded)))
+    (perl-refactoring--exec-prt "replace_token" project-root from to expanded)
+    (perl-refactoring--revert-buffers project-root expanded)))
 
 (provide 'perl-refactoring)
 
