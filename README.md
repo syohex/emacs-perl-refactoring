@@ -1,11 +1,11 @@
 # perl-refactoring.el
 
-`perl-refactoring.el` is front end of `App::PRT`.
+`perl-refactoring.el` is front end of [App::PRT](https://github.com/hitode909/App-PRT).
 
 
 ## Requirements
 
-- `App::PRT`
+- [App::PRT](https://github.com/hitode909/App-PRT)
 - `File::Zglob`
 
 
