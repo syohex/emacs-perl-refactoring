@@ -47,7 +47,7 @@
           (args (list "-MFile::Zglob" "-wle"
                       (format "print for zglob(qw{%s})" target))))
       (unless (zerop (apply 'call-process "perl" nil t nil args))
-        (error "Failed: expand target glob" ))
+        (error "Failed: expand target glob(Please check File::Zglob is installed ?)"))
       (goto-char (point-min))
       (let ((files nil))
         (while (not (eobp))
@@ -72,12 +72,11 @@
 
 ;; This function should be implemented asynchronous
 (defun perl-refactoring--exec-prt (subcmd root from to target)
-  (let ((default-directory root)
-        (cmd (format "prt %s %s %s %s"
-                     subcmd from to
-                     (mapconcat 'identity target " "))))
-    (unless (zerop (call-process-shell-command cmd))
-      (error "Failed: '%s'" cmd))
+  (let ((default-directory root))
+    (unless (zerop (apply 'call-process "prt" nil nil nil subcmd from to target))
+      (error "Failed: '%s'" (format "prt %s %s %s %s"
+                                    subcmd from to
+                                    (mapconcat 'identity target " "))))
     (message "Success: prt %s" subcmd)))
 
 (defun perl-refactoring--apply-buffers (func root files)
